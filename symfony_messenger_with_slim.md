@@ -127,7 +127,7 @@ Slim by default has no tool for performing CLI commands, so we have to define ou
 
 `bin/run`
 
-```
+```php
 #!/usr/bin/env php
 <?php
 
