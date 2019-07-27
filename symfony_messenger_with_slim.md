@@ -157,6 +157,8 @@ As you might have noticed, apart from the `SayHelloCommand` there is another one
 
 The first thing you can define is the `SayHelloCommand`
 
+`src/dependencies.php`
+
 ```php
 $container[\App\Commands\SayHelloCommand::class] = function ($c) {
     return new \App\Commands\SayHelloCommand(
@@ -166,6 +168,8 @@ $container[\App\Commands\SayHelloCommand::class] = function ($c) {
 ```
 
 Now you have to define the `MessageBusInterface`:
+
+`src/dependencies.php`
 
 ```php
 $container[\Symfony\Component\Messenger\MessageBusInterface::class] = function ($c) {
@@ -196,6 +200,8 @@ The `HandleMessageMiddleware` defines handlers for our messages. A message may h
 
 The next thing you have to configure is the `ConsumeMessagesCommand`:
 
+`src/dependencies.php`
+
 ```php
 $container[\Symfony\Component\Messenger\Command\ConsumeMessagesCommand::class] = function ($c) {
     // to be able to see the results in the console
@@ -221,6 +227,9 @@ Note two things:
 * worker depends on `Receiver`s to read messages. A `Sender` + `Receiver` = `Transport`. This is why there are `amqp` thrown all around.
 * failed commands can be retried. For now, the only strategy available is `MultiplierRetryStrategy` (please refer to the official documentation for more details how to configure it). The example above shows how to configure messages from the `amqp` transport so they have to be retried 3 times before discarding. You can pass `null` if you don't want your messages to be retried.
 
+
+`src/dependencies.php`
+
 ```php
 $container[\Symfony\Component\Messenger\Transport\TransportInterface::class] = function ($c) {
     $connection = \Symfony\Component\Messenger\Transport\AmqpExt\Connection::fromDsn($_ENV['AMQP_DSN']);
@@ -232,6 +241,18 @@ $container['amqp'] = function ($c) {
     return $c->get(TransportInterface::class);
 };
 ```
+
+## Test it
+
+With everything set up, first run the worker:
+
+`bin/run messenger:consume`
+
+And then you can send a test message:
+
+`bin/run say-hello John`
+
+In the worker output you should see a result.
 
 ## Links
 
