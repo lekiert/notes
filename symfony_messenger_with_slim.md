@@ -238,7 +238,7 @@ $container[\Symfony\Component\Messenger\Transport\TransportInterface::class] = f
 };
 
 $container['amqp'] = function ($c) {
-    return $c->get(TransportInterface::class);
+    return $c->get(\Symfony\Component\Messenger\Transport\TransportInterface::class);
 };
 ```
 
