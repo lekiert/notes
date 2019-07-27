@@ -19,6 +19,8 @@ You will need the following packages (use `composer` to install them):
 
 First you need to define a message class, which will be passed through the message bus and transport of your choice. Message classes are POPOs - the have to be serializable. For example:
 
+`src/Messages/Hello.php`
+
 ```php
 <?php
 
@@ -41,6 +43,8 @@ class Hello
 ```
 
 Now that you have a message, you must define a handler that will perform some logic:
+
+`src/Handlers/HelloHandler.php`
 
 ```php
 <?php
@@ -72,6 +76,8 @@ And that's it.
 ## Commands
 
 Messages have to be sent somewhere, so handlers can pick them up. We can create a CLI command for sending the `Hello` message:
+
+`src/Commands/SayHelloCommand.php`
 
 ```php
 <?php
@@ -113,6 +119,46 @@ class SayHelloCommand extends Command
 }
 ```
 
-# Links
+Note that we use the `Envelope` class as a wrapper of the original message. For the detailed explanation what Envelopes (and Stamps) are, please refer to the Messenger documentation.
+
+## CLI tool
+
+Slim by default has no tool for performing CLI commands, so we have to define our own. Here is an example of a `bin/run` file:
+
+`bin/run`
+
+```
+#!/usr/bin/env php
+<?php
+
+use App\Commands\SayHelloCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = new Dotenv\Dotenv(__DIR__ . '/../', '.env');
+$dotenv->load();
+
+// create a Slim app and define all dependencies
+$settings = require __DIR__ . '/../src/settings.php';
+$app = new \Slim\App($settings);
+require __DIR__ . '/../src/dependencies.php';
+
+$cli = new Application;
+$cli->add($container->get(ConsumeMessagesCommand::class)); // notice this one
+$cli->add($container->get(SayHelloCommand::class));
+$cli->run();
+```
+
+As you might have noticed, apart from the `SayHelloCommand` there is another one: `ConsumeMessagesCommand`. This is a command that comes out of the box with the Messenger component. This is the worker command that will be reponsible for reading messages from queues and delegating them to appropriate handlers.
+
+## Dependency container
+
+
+
+
+
+## Links
 
 1. https://symfony.com/doc/current/messenger.html
