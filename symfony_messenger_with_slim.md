@@ -151,7 +151,7 @@ $cli->add($container->get(SayHelloCommand::class));
 $cli->run();
 ```
 
-As you might have noticed, apart from the `SayHelloCommand` there is another one: `ConsumeMessagesCommand`. This is a command that comes out of the box with the Messenger component. This is the worker command that will be reponsible for reading messages from queues and delegating them to appropriate handlers.
+As you might have noticed, apart from the `SayHelloCommand` there is another one: `ConsumeMessagesCommand`. This is a command that comes out of the box with the Messenger component. This is the worker command that will be responsible for reading messages from queues and delegating them to appropriate handlers.
 
 ## Dependency container
 
