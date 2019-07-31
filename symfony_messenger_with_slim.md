@@ -182,11 +182,11 @@ $container[\Symfony\Component\Messenger\MessageBusInterface::class] = function (
     return new \Symfony\Component\Messenger\MessageBus([
         new \Symfony\Component\Messenger\Middleware\SendMessageMiddleware(
             new \Symfony\Component\Messenger\Transport\Sender\SendersLocator([
-                \GooGS\Model\Hello::class => ['amqp'],
+                \App\Messages\Hello::class => ['amqp'],
             ], $c)
         ),
         new HandleMessageMiddleware(new HandlersLocator([
-            \GooGS\Model\Hello::class => [new \GooGS\Handlers\HelloHandler($output)],
+            \App\Messages\Hello::class => [new \App\Handlers\HelloHandler($output)],
         ])),
     ]);
 };
